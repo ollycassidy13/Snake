@@ -20,16 +20,28 @@ public class Board {
         this.cells = cells;
     }
 
-    public void generateFood() {
-        System.out.println("Going to generate food");
-        int row = 0, column = 0;
-        while (true) {
+    public void generateFood(Snake snake) {
+        java.util.List<Cell> snakeCells = snake.getSnakePartList();
+        
+        boolean validPositionFound = false;
+        int row, col;
+        
+        while (!validPositionFound) {
             row = (int)(Math.random() * ROW_COUNT);
-            column = (int)(Math.random() * COL_COUNT);
-            if (cells[row][column].getCellType() != CellType.SNAKE_NODE)
-                break;
+            col = (int)(Math.random() * COL_COUNT);
+            
+            boolean conflict = false;
+            for (Cell snakePart : snakeCells) {
+                if (snakePart.getRow() == row && snakePart.getCol() == col) {
+                    conflict = true;
+                    break;
+                }
+            }
+            
+            if (!conflict) {
+                cells[row][col].setCellType(CellType.FOOD);
+                validPositionFound = true;
+            }
         }
-        cells[row][column].setCellType(CellType.FOOD);
-        System.out.println("Food is generated at: " + row + " " + column);
     }
 }
